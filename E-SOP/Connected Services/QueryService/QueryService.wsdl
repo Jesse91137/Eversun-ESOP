@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="QueryItemNoByWo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="woNo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueryItemNoByWoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="QueryItemNoByWoResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueryItemNoBySn">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="serialNo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueryItemNoBySnResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="QueryItemNoBySnResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueryBarcodeStation">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="serialNo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueryBarcodeStationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="QueryBarcodeStationResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueryKeyPartsBySn">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="serialNo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueryKeyPartsBySnResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="QueryKeyPartsBySnResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueryRepair_InfoBySn">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="serialNo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueryRepair_InfoBySnResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="QueryRepair_InfoBySnResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueryWO_Info">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sWoNo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="QueryWO_InfoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="QueryWO_InfoResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="QueryItemNoByWoSoapIn">
+    <wsdl:part name="parameters" element="tns:QueryItemNoByWo" />
+  </wsdl:message>
+  <wsdl:message name="QueryItemNoByWoSoapOut">
+    <wsdl:part name="parameters" element="tns:QueryItemNoByWoResponse" />
+  </wsdl:message>
+  <wsdl:message name="QueryItemNoBySnSoapIn">
+    <wsdl:part name="parameters" element="tns:QueryItemNoBySn" />
+  </wsdl:message>
+  <wsdl:message name="QueryItemNoBySnSoapOut">
+    <wsdl:part name="parameters" element="tns:QueryItemNoBySnResponse" />
+  </wsdl:message>
+  <wsdl:message name="QueryBarcodeStationSoapIn">
+    <wsdl:part name="parameters" element="tns:QueryBarcodeStation" />
+  </wsdl:message>
+  <wsdl:message name="QueryBarcodeStationSoapOut">
+    <wsdl:part name="parameters" element="tns:QueryBarcodeStationResponse" />
+  </wsdl:message>
+  <wsdl:message name="QueryKeyPartsBySnSoapIn">
+    <wsdl:part name="parameters" element="tns:QueryKeyPartsBySn" />
+  </wsdl:message>
+  <wsdl:message name="QueryKeyPartsBySnSoapOut">
+    <wsdl:part name="parameters" element="tns:QueryKeyPartsBySnResponse" />
+  </wsdl:message>
+  <wsdl:message name="QueryRepair_InfoBySnSoapIn">
+    <wsdl:part name="parameters" element="tns:QueryRepair_InfoBySn" />
+  </wsdl:message>
+  <wsdl:message name="QueryRepair_InfoBySnSoapOut">
+    <wsdl:part name="parameters" element="tns:QueryRepair_InfoBySnResponse" />
+  </wsdl:message>
+  <wsdl:message name="QueryWO_InfoSoapIn">
+    <wsdl:part name="parameters" element="tns:QueryWO_Info" />
+  </wsdl:message>
+  <wsdl:message name="QueryWO_InfoSoapOut">
+    <wsdl:part name="parameters" element="tns:QueryWO_InfoResponse" />
+  </wsdl:message>
+  <wsdl:portType name="QueryServiceSoap">
+    <wsdl:operation name="QueryItemNoByWo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">工單查詢料號</wsdl:documentation>
+      <wsdl:input message="tns:QueryItemNoByWoSoapIn" />
+      <wsdl:output message="tns:QueryItemNoByWoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="QueryItemNoBySn">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">序號查詢料號</wsdl:documentation>
+      <wsdl:input message="tns:QueryItemNoBySnSoapIn" />
+      <wsdl:output message="tns:QueryItemNoBySnSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="QueryBarcodeStation">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">查詢序號過站紀錄</wsdl:documentation>
+      <wsdl:input message="tns:QueryBarcodeStationSoapIn" />
+      <wsdl:output message="tns:QueryBarcodeStationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="QueryKeyPartsBySn">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">查詢序號Key parts紀錄</wsdl:documentation>
+      <wsdl:input message="tns:QueryKeyPartsBySnSoapIn" />
+      <wsdl:output message="tns:QueryKeyPartsBySnSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="QueryRepair_InfoBySn">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">查詢維修資訊紀錄</wsdl:documentation>
+      <wsdl:input message="tns:QueryRepair_InfoBySnSoapIn" />
+      <wsdl:output message="tns:QueryRepair_InfoBySnSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="QueryWO_Info">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">查詢工單資訊紀錄</wsdl:documentation>
+      <wsdl:input message="tns:QueryWO_InfoSoapIn" />
+      <wsdl:output message="tns:QueryWO_InfoSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="QueryServiceSoap" type="tns:QueryServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="QueryItemNoByWo">
+      <soap:operation soapAction="http://tempuri.org/QueryItemNoByWo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueryItemNoBySn">
+      <soap:operation soapAction="http://tempuri.org/QueryItemNoBySn" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueryBarcodeStation">
+      <soap:operation soapAction="http://tempuri.org/QueryBarcodeStation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueryKeyPartsBySn">
+      <soap:operation soapAction="http://tempuri.org/QueryKeyPartsBySn" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueryRepair_InfoBySn">
+      <soap:operation soapAction="http://tempuri.org/QueryRepair_InfoBySn" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueryWO_Info">
+      <soap:operation soapAction="http://tempuri.org/QueryWO_Info" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="QueryServiceSoap12" type="tns:QueryServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="QueryItemNoByWo">
+      <soap12:operation soapAction="http://tempuri.org/QueryItemNoByWo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueryItemNoBySn">
+      <soap12:operation soapAction="http://tempuri.org/QueryItemNoBySn" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueryBarcodeStation">
+      <soap12:operation soapAction="http://tempuri.org/QueryBarcodeStation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueryKeyPartsBySn">
+      <soap12:operation soapAction="http://tempuri.org/QueryKeyPartsBySn" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueryRepair_InfoBySn">
+      <soap12:operation soapAction="http://tempuri.org/QueryRepair_InfoBySn" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="QueryWO_Info">
+      <soap12:operation soapAction="http://tempuri.org/QueryWO_Info" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="QueryService">
+    <wsdl:port name="QueryServiceSoap" binding="tns:QueryServiceSoap">
+      <soap:address location="http://192.168.4.200/AMES/Service/QueryService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="QueryServiceSoap12" binding="tns:QueryServiceSoap12">
+      <soap12:address location="http://192.168.4.200/AMES/Service/QueryService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
