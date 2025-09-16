@@ -545,7 +545,7 @@
             this.listBox1.Size = new System.Drawing.Size(466, 168);
             this.listBox1.TabIndex = 0;
             this.listBox1.ThemeName = "Material";
-            this.listBox1.SelectedIndexChanged += new Telerik.WinControls.UI.Data.PositionChangedEventHandler(this.listBox1_SelectedIndexChanged);
+           // this.listBox1.SelectedIndexChanged += new Telerik.WinControls.UI.Data.PositionChangedEventHandler(this.listBox1_SelectedIndexChanged);
             this.listBox1.DoubleClick += new System.EventHandler(this.listBox1_DoubleClick);
             // 
             // pictureBox1

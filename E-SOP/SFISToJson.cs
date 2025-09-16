@@ -61,9 +61,9 @@ namespace E_SOP
                 dt.Append(response.Content.ToString());
                 return dt;
             }
-            catch(Exception EX)
+            catch(Exception ex)
             {
-                
+                Console.WriteLine($"發生錯誤：{ex.Message}");
                 return dt;
             }
         }
@@ -88,7 +88,7 @@ namespace E_SOP
             }
             catch(Exception ex)
             {
-                
+                Console.WriteLine($"發生錯誤：{ex.Message}");
                 return "";
             }
         }

@@ -52,6 +52,11 @@ namespace E_SOP
                 return label3.Text;
             }
         }
+        /// <summary>
+        /// 登入者確認
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void radButton1_Click(object sender, EventArgs e)
         {
             try
@@ -115,9 +120,9 @@ namespace E_SOP
                     MessageBox.Show("Windows資料庫上傳失敗");
                 }
             }
-            catch (Exception aa)
+            catch (Exception ex)
             {
-
+                Console.WriteLine($"Windows資料庫上傳失敗時發生錯誤：{ex.Message}");
                 MessageBox.Show("Windows資料庫上傳失敗");
             }
         }

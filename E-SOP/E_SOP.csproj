@@ -59,7 +59,7 @@
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -70,28 +70,6 @@
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debugx64|x86'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debugx64\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debugx64|x64'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debugx64\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
@@ -127,6 +105,7 @@
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
@@ -195,55 +174,55 @@
     <Reference Include="System.Xml" />
     <Reference Include="Telerik.WinControls, Version=2020.1.113.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.WinControls.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.WinControls.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.WinControls.RadDiagram, Version=2020.1.113.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.WinControls.RadDiagram.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.WinControls.RadDiagram.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.WinControls.RichTextEditor, Version=2020.1.113.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.WinControls.RichTextEditor.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.WinControls.RichTextEditor.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.WinControls.Themes.CrystalDark, Version=2020.1.113.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.WinControls.Themes.CrystalDark.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.WinControls.Themes.CrystalDark.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.WinControls.Themes.Material, Version=2020.1.113.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.WinControls.Themes.Material.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.WinControls.Themes.Material.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.WinControls.Themes.MaterialBlueGrey, Version=2020.1.113.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.WinControls.Themes.MaterialBlueGrey.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.WinControls.Themes.MaterialBlueGrey.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.WinControls.Themes.MaterialPink, Version=2020.1.113.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.WinControls.Themes.MaterialPink.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.WinControls.Themes.MaterialPink.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.WinControls.Themes.MaterialTeal, Version=2020.1.113.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.WinControls.Themes.MaterialTeal.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.WinControls.Themes.MaterialTeal.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.WinControls.Themes.Office2010Blue, Version=2020.1.113.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.WinControls.Themes.Office2010Blue.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.WinControls.Themes.Office2010Blue.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.WinControls.UI, Version=2020.1.113.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.WinControls.UI.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.WinControls.UI.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Windows.Documents.Core, Version=2020.1.109.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.Windows.Documents.Core.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.Windows.Documents.Core.dll</HintPath>
     </Reference>
     <Reference Include="Telerik.Windows.Documents.Fixed, Version=2020.1.109.40, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\Telerik.Windows.Documents.Fixed.dll</HintPath>
+      <HintPath>bin\Debug\Telerik.Windows.Documents.Fixed.dll</HintPath>
     </Reference>
     <Reference Include="TelerikCommon, Version=2020.1.113.40, Culture=neutral, PublicKeyToken=5bb2a467cbec794e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Progress\Telerik UI for WinForms R1 2020\Bin40\TelerikCommon.dll</HintPath>
+      <HintPath>bin\Debug\TelerikCommon.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -269,12 +248,14 @@
     <Compile Include="InputBox.Designer.cs">
       <DependentUpon>InputBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="MyItem.cs" />
     <Compile Include="PE_Note.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PE_Note.Designer.cs">
       <DependentUpon>PE_Note.cs</DependentUpon>
     </Compile>
+    <Compile Include="Production.cs" />
     <Compile Include="SFISToJson.cs" />
     <Compile Include="SOPForm1.cs">
       <SubType>Form</SubType>
@@ -312,6 +293,7 @@
     <Compile Include="SOPForm6.Designer.cs">
       <DependentUpon>SOPForm6.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\FileUtils.cs" />
     <Compile Include="ViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
