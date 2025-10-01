@@ -1440,16 +1440,26 @@ namespace E_SOP
             }
 
             #region OPEN ESOP
+            // 機種名稱是取自檔名前綴
             // 組合完整的檔案路徑
             // 對於特殊文件直接使用path，對於一般文件則組合完整路徑
             string SOPpath = (special.Substring(0, 2) == "EM" || special.Contains("SERVICE") == true) ? path : path + folder_F + @"\" + strrtn + @"\" + filename;
 
-            // 複製檔案到臨時目錄並返回新路徑
-            SOPpath = openFile_copyFile(SOPpath.TrimEnd('\\'));
 
-            // 使用系統預設應用程式開啟檔案
-            // 使用共用 OpenFile 方法來開啟檔案並統一處理時間更新
-            OpenFile(SOPpath);
+            // 防呆：檢查檔案是否存在，若不存在則跳提示，不執行 copy 與開啟，但維修資料統計仍執行 By 20251001 Jesse
+            bool fileExists = File.Exists(SOPpath);
+            if (!fileExists)
+            {
+                MessageBox.Show($"檔案不存在：{SOPpath}", "檔案錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                // 複製檔案到臨時目錄並返回新路徑
+                SOPpath = openFile_copyFile(SOPpath.TrimEnd('\\'));
+                // 使用系統預設應用程式開啟檔案
+                // 使用共用 OpenFile 方法來開啟檔案並統一處理時間更新
+                OpenFile(SOPpath);
+            }
             #endregion
 
             // 顯示相對應的[AMES-維修資料統計] By 20250513 Jesse
@@ -1466,11 +1476,13 @@ namespace E_SOP
             string strStationName = string.Empty;
             try
             {
+                // 若機種名稱為空，則嘗試從工單號碼查詢
                 if (string.IsNullOrEmpty(deviceName))
                 {
                     deviceName = QueryDataSet(txt_WO.Text);
                 }
 
+                // 若仍無法取得機種名稱，則無法進行查詢
                 if (!string.IsNullOrEmpty(deviceName))
                 {
                     // 因查找維修統計 20250514 By Jesse
@@ -1493,6 +1505,14 @@ namespace E_SOP
                         || (!string.IsNullOrEmpty(strfilename) && strfilename.IndexOf("DIP", StringComparison.OrdinalIgnoreCase) >= 0))
                     {
                         strStationName = "DIP";
+                    }
+
+                    // 如果檔名或處理後的檔名包含 SMD，直接使用 站別包含[AOI] By 20250917 Jesse
+                    // 如果檔名或處理後的檔名包含 SMD，直接使用 strStationName 作為查詢條件
+                    if ((!string.IsNullOrEmpty(filename) && filename.IndexOf("SMD", StringComparison.OrdinalIgnoreCase) >= 0)
+                        || (!string.IsNullOrEmpty(strfilename) && strfilename.IndexOf("SMD", StringComparison.OrdinalIgnoreCase) >= 0))
+                    {
+                        strStationName = "AOI";
                     }
                     if (!string.IsNullOrWhiteSpace(responsibilityUnit) || !string.IsNullOrWhiteSpace(strStationName))
                     {
@@ -1551,7 +1571,8 @@ namespace E_SOP
         /// <returns></returns>
         private DataSet QueryRepairRecords(string deviceName, string responsibilityUnit, string strStationName)
         {
-            // 增加判斷站別是DIP By 20250911 Jesse
+            // 增加判斷站別是[DIP] By 20250911 Jesse
+            // 增加判斷站別是[AOI] By 20250917 Jesse
             // A.StationName /*站別*/
 
             // 若沒有提供機種名稱，直接回傳空的 DataSet，避免不必要的 DB 查詢
