@@ -1,3 +1,4 @@
+#region Using Directives
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,14 +14,22 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+#endregion
 
 namespace E_SOP
 {
+    #region RadForm1 Implementation
+    // ==========================
+    // 類別：RadForm1
+    // ==========================
     public partial class RadForm1 : Telerik.WinControls.UI.RadForm
     {
-        //宣告變數
-        #region
+        // ==========================
+        // 欄位宣告區
+        // ==========================
+        #region 欄位宣告
 
         /// <summary>
         /// 主視窗共用的 ListBox，供其他類別或靜態存取主視窗顯示之訊息用。
@@ -182,6 +191,10 @@ namespace E_SOP
 
         #endregion
 
+        // ==========================
+        // 檔案/目錄操作區
+        // ==========================
+        #region 檔案與目錄操作
         /// <summary>
         /// 嘗試刪除整個資料夾，會重試多次並處理被鎖定或唯讀的檔案。
         /// 若遇到正在使用的檔案，將使用 WipeFile 做覆寫刪除保底處理。
@@ -268,6 +281,10 @@ namespace E_SOP
             }
         }
 
+        // ==========================
+        // 建構子
+        // ==========================
+        #endregion // 檔案與目錄操作
         /// <summary>
         /// 建構函式，初始化 RadForm1 物件。
         /// </summary>
@@ -276,6 +293,10 @@ namespace E_SOP
             InitializeComponent(); // 初始化元件
         }
 
+        // ==========================
+        // 事件處理區
+        // ==========================
+        #region Event Handlers
         /// <summary>
         /// 主視窗載入事件。初始化各項設定、判斷程式是否重複執行、版本更新、資料夾建立、預設部門設定等。
         /// </summary>
@@ -443,6 +464,12 @@ namespace E_SOP
             }
         }
 
+        // ==========================
+        // 方法區
+        // ==========================
+        #endregion // Event Handlers
+
+        #region Helpers
         /// <summary>
         /// 設定預設製程部門，根據傳入的部門名稱 D，自動選擇對應的下拉選單索引。
         /// </summary>
@@ -478,6 +505,9 @@ namespace E_SOP
             }
         }
 
+        // ==========================
+        // 共用工具/輔助方法區
+        // ==========================
         /// <summary>
         /// 打開指定路徑的檔案，並委派給共用工具 FileUtils 進行實際開啟處理。
         /// </summary>
@@ -1237,6 +1267,8 @@ namespace E_SOP
                 Production.pack_assy = Production.soppath + dstwice.Tables[0].Rows[0][0].ToString() + @"後製程\";
             }
             #endregion
+
+            #endregion // RadForm1 Implementation
         }
 
         /// <summary>
@@ -1318,35 +1350,121 @@ namespace E_SOP
         }
 
         /// <summary>
-        /// 遞迴搜尋指定目錄及其所有子目錄下，
-        /// 檔名包含工單號碼(txt_WO.Text)的檔案，
-        /// 並將檔案名稱加入 listBox1，同時記錄完整路徑到 Production.filepathlist。
+        /// 非同步搜尋指定目錄及其所有子目錄下，
+        /// 檔名包含工單號碼(txt_WO.Text)的檔案。
+        /// 搜尋在背景執行並以批次方式回寫到 UI，避免大量 I/O 阻塞 UI 執行緒。
+        /// 為了效能使用 Directory.EnumerateFiles 與疊代 (stack) 實作，並捕捉存取例外。
         /// </summary>
         /// <param name="dirPath">要搜尋的根目錄路徑。</param>
         public void FindFile(string dirPath)
         {
-            //在指定目錄及子目錄下查詢檔案,在listBox1中列出子目錄及檔案
-            DirectoryInfo Dir = new DirectoryInfo(dirPath);
-            try
+            // 若路徑不存在或為空則直接回傳
+            if (string.IsNullOrWhiteSpace(dirPath) || !Directory.Exists(dirPath))
             {
-                foreach (DirectoryInfo d in Dir.GetDirectories())//查詢子目錄
+                return;
+            }
+
+            // 取得搜尋關鍵字（保留原行為，若為空字串則會匹配所有檔案）
+            string keyword = txt_WO?.Text ?? string.Empty;
+            string pattern = "*" + keyword + "*";
+
+            // 使用本地容器收集結果，最後一次性在 UI 執行緒回寫，避免頻繁跨執行緒呼叫
+            List<string> foundNames = new List<string>();
+            List<string> foundFullPaths = new List<string>();
+
+            // 在背景執行搜尋
+            Task.Run(() =>
+            {
+                try
                 {
-                    FindFile(Dir + d.ToString() + "\\");
-                    //listBox1.Items.Add(Dir + d.ToString() + "\\");//listBox1中填加目錄名
-                }
-                foreach (FileInfo f in Dir.GetFiles())//查詢檔案
-                {
-                    if (f.Name.IndexOf(txt_WO.Text) >= 0)
+                    var stack = new Stack<string>(new[] { dirPath });
+                    while (stack.Count > 0)
                     {
-                        listBox1.Items.Add(f.ToString());//listBox1中填加檔名
-                        Production.filepathlist.Add(Dir.FullName + f.ToString());
+                        string current = stack.Pop();
+                        try
+                        {
+                            // 先用 pattern 篩選檔案（比一次取得所有檔案再過濾來得快）
+                            IEnumerable<string> files = Directory.EnumerateFiles(current, pattern, SearchOption.TopDirectoryOnly);
+                            foreach (var file in files)
+                            {
+                                try
+                                {
+                                    string name = Path.GetFileName(file);
+                                    // 與原本邏輯相同：使用 IndexOf 檢查，確保行為一致（空 keyword 會 match 全部）
+                                    if (name.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                                    {
+                                        foundNames.Add(name);
+                                        foundFullPaths.Add(file);
+                                    }
+                                }
+                                catch
+                                {
+                                    // 忽略單一檔案讀取錯誤
+                                }
+                            }
+
+                            // 再將子目錄推入 stack
+                            IEnumerable<string> dirs = Directory.EnumerateDirectories(current);
+                            foreach (var d in dirs)
+                            {
+                                stack.Push(d);
+                            }
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            // 無存取權限，略過此目錄
+                            continue;
+                        }
+                        catch (PathTooLongException)
+                        {
+                            // 路徑過長，略過
+                            continue;
+                        }
+                        catch (DirectoryNotFoundException)
+                        {
+                            // 目錄可能在搜尋期間被移除，略過
+                            continue;
+                        }
+                        catch (IOException)
+                        {
+                            // IO 錯誤，略過該目錄
+                            continue;
+                        }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
+                catch (Exception ex)
+                {
+                    // 背景錯誤不應拋到 UI；記錄或顯示簡短訊息
+                    try
+                    {
+                        this.BeginInvoke((MethodInvoker)(() => listBox2.Items.Add("FindFile error: " + ex.Message)));
+                    }
+                    catch { }
+                }
+                finally
+                {
+                    // 在 UI 執行緒批次加入結果，並將完整路徑寫入 Production.filepathlist
+                    try
+                    {
+                        if (!this.IsDisposed && this.IsHandleCreated)
+                        {
+                            this.BeginInvoke((MethodInvoker)(() =>
+                            {
+                                foreach (var name in foundNames)
+                                {
+                                    listBox1.Items.Add(name);
+                                }
+                                // 將完整路徑加入 Production.filepathlist
+                                foreach (var fp in foundFullPaths)
+                                {
+                                    Production.filepathlist.Add(fp);
+                                }
+                            }));
+                        }
+                    }
+                    catch { }
+                }
+            });
         }
 
         /// <summary>
@@ -1581,14 +1699,37 @@ namespace E_SOP
                 return new DataSet();
             }
 
-            string sql = @"SELECT DISTINCT A.FailureDate,/*不良日期*/
-	                       A.ResponsibilityUnit,/*責任單位*/
-                           A.RepairPartNumber,/*維修料號*/
-                           A.RepairLocation,/*維修位置*/
-                           A.FailureDescription,/*不良描述*/
-                           A.Notes/*備註*/
-                           FROM [dbo].[E_SOP_RepairRecords] A
-                           WHERE A.DeviceName = @DeviceName ";
+            //string sql = @"SELECT DISTINCT A.FailureDate,/*不良日期*/
+            //            A.ResponsibilityUnit,/*責任單位*/
+            //               A.RepairPartNumber,/*維修料號*/
+            //               A.RepairLocation,/*維修位置*/
+            //               A.FailureDescription,/*不良描述*/
+            //               A.Notes/*備註*/
+            //               FROM [dbo].[E_SOP_RepairRecords] A
+            //               WHERE A.DeviceName = @DeviceName ";
+
+            string sql = @"	WITH CalculatedCounts AS (
+                        -- 步驟一：計算總次數 (ActualCount) 和行號 (RN)
+                        SELECT 
+                            A.*, -- 選取所有原始欄位
+                            -- 該組合的實際總次數 (用於排序)
+                            COUNT(*) OVER (
+                                PARTITION BY 
+                                    A.RepairLocation, 
+                                    A.FailureDescription
+                            ) AS CombinationCount,
+                            -- 判斷是否為該組合的第一筆記錄 (用於顯示)
+                            ROW_NUMBER() OVER (
+                                PARTITION BY 
+                                    A.RepairLocation, 
+                                    A.FailureDescription 
+                                ORDER BY 
+                                    A.FailureDate -- 決定第一筆的排序依據
+                            ) AS RN
+                        FROM 
+                            [dbo].[E_SOP_RepairRecords] A
+                        WHERE 
+                            A.DeviceName = @DeviceName ";
 
             // 只在有值時加入對應的條件與參數，避免傳遞空字串到 DB
             var parameters = new Dictionary<string, object>
@@ -1598,7 +1739,7 @@ namespace E_SOP
 
             if (!string.IsNullOrWhiteSpace(responsibilityUnit) && !string.IsNullOrWhiteSpace(strStationName))
             {
-                sql += " AND (A.ResponsibilityUnit = @ResponsibilityUnit OR A.StationName LIKE @StationName) ";
+                sql += " AND (ResponsibilityUnit = @ResponsibilityUnit OR StationName LIKE @StationName) ";
                 parameters.Add("@ResponsibilityUnit", responsibilityUnit);
                 parameters.Add("@StationName", "%" + strStationName + "%");
             }
@@ -1606,17 +1747,33 @@ namespace E_SOP
             if (!string.IsNullOrWhiteSpace(strStationName))
             {
                 // 使用模糊比對，並在參數中帶上通配符以利索引使用
-                sql += " AND A.StationName LIKE @StationName ";
+                sql += " AND StationName LIKE @StationName ";
                 parameters.Add("@StationName", "%" + strStationName + "%");
             }
             else
             if (!string.IsNullOrWhiteSpace(responsibilityUnit))
             {
-                sql += " AND A.ResponsibilityUnit = @ResponsibilityUnit ";
+                sql += " AND ResponsibilityUnit = @ResponsibilityUnit ";
                 parameters.Add("@ResponsibilityUnit", responsibilityUnit);
             }
 
-            sql += " Order By A.FailureDate ";
+            //-- 步驟三：依據實際總次數 (ActualCount) 由大到小排序
+            sql += @" )
+                    SELECT 
+                        -- 選取您原始需要的欄位
+                        FailureDate,/*不良日期*/
+                        ResponsibilityUnit,/*責任單位*/ 
+                        RepairPartNumber,/*維修料號*/   
+                        RepairLocation,/*維修位置*/     
+                        FailureDescription,/*不良描述*/ 
+                        Notes,/*備註*/                                     
+                        CombinationCount /*總筆數*/                            
+                    FROM 
+                        CalculatedCounts 
+                        Order By CombinationCount DESC,       -- 依總計數降冪排序
+                        RepairLocation,         -- 總計數相同時，依維修位置排序
+                        FailureDescription,     -- 總計數相同時，依不良描述排序
+                        FailureDate;            -- 確保每個組合內部的記錄排序穩定 ";
 
             return db.reDsWithParams(sql, parameters);
         }
@@ -1631,70 +1788,43 @@ namespace E_SOP
                 // 建立新視窗來顯示查詢結果
                 Form repairForm = new Form();
                 repairForm.Text = "維修統計 ";
-                repairForm.Width = 800;
+                repairForm.Width = 900;
                 repairForm.Height = 600;
                 repairForm.StartPosition = FormStartPosition.CenterScreen;
 
                 // 直接創建帶中文標題的新 DataTable
+                #region 建立新的 DataTable 並定義欄位
                 DataTable filteredTable = new DataTable();
-                // A.FailureDate,/*不良日期*/
-                // A.ResponsibilityUnit/*責任單位*/
-                // A.RepairPartNumber/*維修料號*/
-                // A.RepairLocation,/*維修位置*/
-                // A.FailureDescription,/*不良描述*/
-                // A.Notes/*備註*/  */
-
-                // 先添加欄位，使用中文名稱
                 filteredTable.Columns.Add("不良日期", typeof(string));
                 filteredTable.Columns.Add("責任單位", typeof(string));
                 filteredTable.Columns.Add("維修料號", typeof(string));
                 filteredTable.Columns.Add("維修位置", typeof(string));
                 filteredTable.Columns.Add("不良描述", typeof(string));
+                filteredTable.Columns.Add("總筆數", typeof(int)); // 型態改為 int
                 filteredTable.Columns.Add("備註", typeof(string));
-
-                // 將原始資料複製到新表格中
+                #endregion
+                #region 裝資料到新的 DataTable
                 foreach (DataRow row in dsRepair.Tables[0].Rows)
                 {
                     DataRow newRow = filteredTable.NewRow();
-                    #region 對應原始欄位和新欄位
-                    // 對應原始欄位和新欄位
-                    // A.FailureDate,/*不良日期*/
                     if (dsRepair.Tables[0].Columns.Contains("FailureDate"))
-                    {
                         newRow["不良日期"] = row["FailureDate"];
-                    }
-                    // A.ResponsibilityUnit/*責任單位*/
                     if (dsRepair.Tables[0].Columns.Contains("ResponsibilityUnit"))
-                    {
                         newRow["責任單位"] = row["ResponsibilityUnit"];
-                    }
-
-                    // A.RepairPartNumber/*維修料號*/
                     if (dsRepair.Tables[0].Columns.Contains("RepairPartNumber"))
-                    {
                         newRow["維修料號"] = row["RepairPartNumber"];
-                    }
-
-                    // A.RepairLocation,/*維修位置*/
                     if (dsRepair.Tables[0].Columns.Contains("RepairLocation"))
-                    {
                         newRow["維修位置"] = row["RepairLocation"];
-                    }
-
-                    // A.FailureDescription,/*不良描述*/
                     if (dsRepair.Tables[0].Columns.Contains("FailureDescription"))
-                    {
                         newRow["不良描述"] = row["FailureDescription"];
-                    }
-
-                    // A.Notes/*備註*/  */
+                    if (dsRepair.Tables[0].Columns.Contains("CombinationCount"))
+                        newRow["總筆數"] = row["CombinationCount"];
                     if (dsRepair.Tables[0].Columns.Contains("Notes"))
-                    {
                         newRow["備註"] = row["Notes"];
-                    }
-                    #endregion
                     filteredTable.Rows.Add(newRow);
                 }
+                #endregion
+
 
                 // 創建 DataGridView 並設定基本屬性
                 DataGridView dgv = new DataGridView();
@@ -1705,9 +1835,52 @@ namespace E_SOP
                 dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
                 dgv.RowHeadersVisible = false;
                 dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
+                // 設定標題水平與垂直置中
+                dgv.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
                 // 設定資料來源
-                dgv.DataSource = filteredTable; // 使用過濾後的表格
+                dgv.DataSource = filteredTable;
+
+                // 先將所有欄位設為 AllCells，並關閉排序功能，之後再調整備註欄
+                foreach (DataGridViewColumn col in dgv.Columns)
+                {
+                    col.SortMode = DataGridViewColumnSortMode.NotSortable; // 關閉排序功能
+                    if (col.Name != "備註")
+                    {
+                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                    }
+                }
+                // 再次於 DataBindingComplete 強制所有欄位排序關閉，避免資料繫結後被重設
+                // 並在此處針對特殊欄位重新套用樣式（例如：總筆數靠右、備註換行）
+                dgv.DataBindingComplete += (s, e) =>
+                {
+                    foreach (DataGridViewColumn col in dgv.Columns)
+                    {
+                        col.SortMode = DataGridViewColumnSortMode.NotSortable;
+                    }
+
+                    // 確保「總筆數」欄位為數值型態且靠右對齊
+                    if (dgv.Columns.Contains("總筆數"))
+                    {
+                        var c = dgv.Columns["總筆數"];
+                        // 明確指定 ValueType 與格式，並強制靠右對齊
+                        c.ValueType = typeof(int);
+                        c.DefaultCellStyle.Format = "N0"; // 顯示整數
+                        c.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                        c.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                    }
+
+                    // 備註欄若存在，確保為 Fill 並允許換行
+                    if (dgv.Columns.Contains("備註"))
+                    {
+                        var noteCol = dgv.Columns["備註"];
+                        noteCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                        noteCol.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                    }
+                };
+
+                // 行高自動調整以配合備註欄換行
+                dgv.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 
                 // 添加標題 Label
                 Label titleLabel = new Label();
@@ -1721,13 +1894,9 @@ namespace E_SOP
                 repairForm.Controls.Add(dgv);
                 repairForm.Controls.Add(titleLabel);
 
-                // 調整 DataGridView 位置，使其在標題下方
-                dgv.Location = new Point(0, titleLabel.Height);
-                dgv.Height = repairForm.ClientSize.Height - titleLabel.Height;
+                // 不再手動調整 DataGridView 位置和高度，直接填滿
 
-                // 設定為最上層
                 repairForm.TopMost = true;
-                // 顯示表單
                 repairForm.Show();
             }
             catch (Exception ex)
@@ -1784,7 +1953,7 @@ namespace E_SOP
             e.DrawFocusRectangle(); // 如果 ListBox 有焦點，則繪製選取框
         }
 
-        #region SOP Open Button
+        #region SOP Buttons
         /// <summary>
         /// Btn_Sop1_Click 事件處理函式。
         /// 處理 SOP1 按鈕點擊時的邏輯，根據設定檔開關與選取項目，
@@ -3013,6 +3182,7 @@ namespace E_SOP
         }
         #endregion
 
+        #region Common Buttons
         /// <summary>
         /// Btn_Clear_Click 事件處理函式。
         /// 按下「清除」按鈕時，會清空所有顯示資料與輸入欄位。
@@ -3037,6 +3207,7 @@ namespace E_SOP
             // 關閉目前視窗
             Close();
         }
+        #endregion
 
         /// <summary>
         /// 判斷指定名稱的 Mutex 是否已存在（用於防止程式重複執行）。
@@ -3086,6 +3257,9 @@ namespace E_SOP
             this.listBox2.Items.Add(value);
         }
 
+        // ==========================
+        // 固定刪除過期檔案的背景計時器
+        // ==========================
         #region 固定刪除過期檔案的背景計時器
         /// <summary>
         /// 啟動一個背景計時器，週期性呼叫 DeleteOldFiles()。
@@ -3297,8 +3471,11 @@ namespace E_SOP
             }
         }
 
-        #endregion
+        #endregion // Helpers
 
+        // ==========================
+        // 版本自動更新區
+        // ==========================
         #region 版本自動更新
         #region .ini 讀寫功能
         /// <summary>
@@ -3431,6 +3608,9 @@ namespace E_SOP
         }
         #endregion
 
+        // ==========================
+        // 無使用區
+        // ==========================
         #region 無使用
         //public static string StrRight(string param, int length)
         //{
@@ -3695,6 +3875,7 @@ namespace E_SOP
                 }
             }
         }
+        #endregion
         #endregion
     }
 }
